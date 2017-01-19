@@ -1,5 +1,7 @@
 # Cisco Spark MeetBot 
 
+Please follow the instructions on https://github.com/CiscoDevNet/node-sparkbot-samples/blob/master/docs/GuideToRunOnCloud9.md before you proceed ahead.
+
 This bot is used for finding out available meeting rooms in a building by using three major components
 	- Cisco Spark
 	- Cloud9 Server
