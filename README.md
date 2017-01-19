@@ -13,6 +13,12 @@ Note that these bot samples code leverage the [node-sparkbot](https://github.com
 __and if you're new to Cisco Spark Apps, note that DevNet provides 10 to 20' [Learning labs](https://learninglabs.cisco.com/labs).__
 
 
+This bot is used for finding out available meeting rooms in a building by using three major components
+	- Cisco Spark
+	- Cloud9 Server
+	- Motion Sensor.
+
+
 ## [helloworld](examples/helloworld.js)
 
 A simple template to start from.
