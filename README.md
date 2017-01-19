@@ -1,17 +1,4 @@
-# Cisco Spark Bot examples in nodejs
-
-Interested in creating your own Cisco Spark bots ? 
-
-Go through the examples below.
-
-If you feel inspired, follow the guides to run your own version of these bots: [Guide to run on Cloud9](docs/GuideToRunLocally.md) and [Guide to run locally](docs/GuideToRunOnCloud9.md).  
-
-Or pick a [template](templates/) that suits your scenario, and customize it.
-
-Note that these bot samples code leverage the [node-sparkbot](https://github.com/CiscoDevNet/node-sparkbot) Bot framework.
-
-__and if you're new to Cisco Spark Apps, note that DevNet provides 10 to 20' [Learning labs](https://learninglabs.cisco.com/labs).__
-
+# Cisco Spark MeetBot 
 
 This bot is used for finding out available meeting rooms in a building by using three major components
 	- Cisco Spark
@@ -71,3 +58,15 @@ Here are some commands that you can use!
 	The bot encourages you to try all kinds of possibilities and let us know your result!
 
 ![](docs/img/meetbot_example.png)
+
+
+Some resources:
+
+If you feel inspired, follow the guides to run your own version of these bots: [Guide to run on Cloud9](docs/GuideToRunLocally.md) and [Guide to run locally](docs/GuideToRunOnCloud9.md).  
+
+Or pick a [template](templates/) that suits your scenario, and customize it.
+
+Note that these bot samples code leverage the [node-sparkbot](https://github.com/CiscoDevNet/node-sparkbot) Bot framework.
+
+__and if you're new to Cisco Spark Apps, note that DevNet provides 10 to 20' [Learning labs](https://learninglabs.cisco.com/labs).__
+
