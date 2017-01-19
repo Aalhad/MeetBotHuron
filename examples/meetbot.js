@@ -40,7 +40,7 @@ var building9 = [];
 var showcase = {};
 var donkeykong = {};
 var tetris = {};
-var cerf315 = {};
+var cerf = {};
 
 // var new_room = createNewRoom(room, building)
 
@@ -49,7 +49,7 @@ var donkeykong = createNewRoom('DonkeyKong', '12', 'RTP Ridge 2');
 var tetris = createNewRoom('Tetris', '12', 'RTP Ridge 2');
 var bonjovi = createNewRoom('BonJovi', '8', 'RTP Ridge 3');
 var einstein = createNewRoom('Einstein', '5', 'RTP Ridge 3');
-var cerf315 = createNewRoom('CERF315', '5', 'RTP Ridge 3');
+var cerf = createNewRoom('Cerf', '5', 'RTP Ridge 3');
 
 
 var ridge1 = {};
@@ -59,7 +59,7 @@ var ridge3 = {};
 ridge1['showcase'] = showcase;
 ridge2['donkeykong']=donkeykong;
 ridge2['tetris'] = tetris;
-ridge3['cerf315'] = cerf315;
+ridge3['cerf'] = cerf;
 ridge3['bonjovi'] = bonjovi;
 ridge3['einstein'] = einstein;
 
@@ -69,21 +69,23 @@ floor['1st'] = 'first';
 floor['1'] = 'first';
 floor['first'] = 'first';
 floor['one'] = 'first';
+floor['ridge1'] = 'first'
 
 floor['2nd'] = 'second';
 floor['2'] = 'second';
 floor['second'] = 'second';
 floor['two'] = 'second';
+floor['ridge2'] = 'second'
 
 floor['3rd'] = 'third';
 floor['3'] = 'third';
 floor['third'] = 'third';
 floor['three'] = 'third';
+floor['ridge3'] = 'third'
 
+var room_building_map = {'showcase':'ridge1', 'donkeykong':'ridge2', 'tetris':'ridge2', 'cerf':'ridge3', 'einstein':'ridge3'};
 
-var room_building_map = {'showcase':'ridge1', 'donkeykong':'ridge2', 'tetris':'ridge2', 'cerf315':'ridge3', 'einstein':'ridge3'};
-
-var room_list = [bonjovi, showcase, donkeykong, tetris, cerf315, einstein];
+var room_list = [bonjovi, showcase, donkeykong, tetris, cerf, einstein];
 
 var available_keywords = ['available', 'free', 'open', 'empty'];
 var occupied_keywords = ['occupied', 'inuse', 'taken', 'busy', 'unavailable'];
@@ -116,16 +118,17 @@ console.log('Listening on port 8082...');
 bot.onCommand("help", function (command) {
     
     var outputString = "<h2> I can help you find empty meeting rooms in your building!"
-                    + "</h2> <h2> Here are some commands that you can use! </h2>"
-                    + "<p> <ul> <li> /RoomStatus {roomname} </li> <li> /Find {status} rooms on {floor-specifier} </li> </ul> "
-                    + "	</ul> <ul> <li> Status: {available, open, inuse, occupied, any, all} </li> </ul> "
+                    + "</h2> <h3> Here are some commands that you can use! </h3>"
+                    + "<p> Don't forget to tag me before every command! (@MeetBotHuron)  <ul> <li> RoomStatus {roomname} </li> <li> Find {status} rooms on {floor-specifier} </li> </ul> "
+                    + "	</ul> <ul> <li> Status: {available, open, free, empty, inuse, occupied, taken, unavailable, any, all} </li> </ul> "
                     + "	<ul> <li> Floor Specifiers: {first floor, 1st floor, floor 1, floor one} </li> "
                     + "	</ul>"
-                    + "<b> Note: </b> Unfortunately building specifiers are not yet ready! <br>"
+                    + "<b> Note: </b> Unfortunately building specifiers are not yet ready! \n\n<br>"
                     + "<b> Examples </b>: "
-                    + " <ul> <li> /RoomStatus </li> <li> /Roomstatus CERF315 </li> <li> /Find available rooms on the 1st floor </li>"
-                    + "<li> /find any rooms on floor 3 </li> <li> /Find all occupied rooms on the floor two</li> <li> /find available rooms on the second floor </li> </ul>"
-                    + "I encourage you to try all kinds of possibilities and let us know your result! </p> "
+                    + " <ul> <li> RoomStatus </li> <li> Roomstatus CERF </li> <li> Find available rooms on the 1st floor </li>"
+                    + "<li> find any rooms on floor 3 </li> <li> Find all occupied rooms on the floor two</li> <li> find available rooms on the second floor </li> </ul>"
+                    + "I encourage you to try all kinds of possibilities and let us know your result! "
+                    + "</p> "
 
     
     spark.createMessage(command.message.roomId, outputString, { "markdown":true }, function(err, message) {
@@ -136,7 +139,7 @@ bot.onCommand("help", function (command) {
     });
 });
 bot.onCommand("fallback", function (command) {
-    spark.createMessage(command.message.roomId, "Sorry, I did not understand.\n\nTry /help.", { "markdown":true }, function(err, response) {
+    spark.createMessage(command.message.roomId, "Sorry, I did not understand.\n\n. {Did you mean find or roomstatus?} Try help", { "markdown":true }, function(err, response) {
         if (err) {
             console.log("WARNING: could not post Fallback message to room: " + command.message.roomId);
             return;
@@ -197,7 +200,7 @@ bot.onEvent("memberships", "created", function (trigger) {
     // so happy to join
     console.log("bot's just added to room: " + trigger.data.roomId);
     
-    spark.createMessage(trigger.data.roomId, "Hi, I am the Hello World bot !\n\nType /hello to see me in action.", { "markdown":true }, function(err, message) {
+    spark.createMessage(trigger.data.roomId, "Hi, I am the Meeting bot !\n\nType help to see me in action.", { "markdown":true }, function(err, message) {
         if (err) {
             console.log("WARNING: could not post Hello message to room: " + trigger.data.roomId);
             return;
@@ -351,7 +354,7 @@ function processAnyAll(inputString, floor, email)
                 outputString = findRoomsByStatus(ridge3, 'available') + findRoomsByStatus(ridge3, 'inuse');
                 break;
             default:
-                outputString = "Sorry <@personEmail:"+email+"> Invalid floor. Please use /RoomStatus to see status of all rooms or specify a floor ";                
+                outputString = "Sorry <@personEmail:"+email+"> Invalid floor. Please use RoomStatus to see status of all rooms or specify a floor ";                
         }
     }
     else
@@ -371,14 +374,15 @@ function updateRoomStatusForMotion(request_body)
     var old_time = new Date(old_time_string);
 
     switch (roomname) {
-        case 'cerf315':
-            cerf315['status'] = 'inuse';
-            cerf315['timestamp'] = old_time;
+        case 'cerf':
+            cerf['status'] = 'inuse';
+            cerf['timestamp'] = old_time;
             // code
             break;
         case 'einstein':
             einstein['status'] = 'inuse';
             einstein['timestamp'] = old_time;
+            break;
         default:
             // code
     }
@@ -386,7 +390,8 @@ function updateRoomStatusForMotion(request_body)
 
 function updateStatusForAllRooms()
 {
-    updateRoomStatusForSingleRoom(cerf315);
+    updateRoomStatusForSingleRoom(cerf);
+    updateRoomStatusForSingleRoom(einstein);
     updateRoomStatusForSingleRoom(showcase);
     updateRoomStatusForSingleRoom(donkeykong);
     updateRoomStatusForSingleRoom(tetris);
@@ -418,9 +423,9 @@ function handleFindMessage(command)
      if (statuses[0] == false && statuses[1] == false)
      {
          outputString = processAnyAll(text.toLowerCase(), floor, email);
-         if (outputString)
+         if (outputString.indexOf('Sorry') == -1)
             {
-                outputString = "Hello <@personEmail:"+email+">, here's what I got! \n"+outputString;
+                outputString = "Hello <@personEmail:"+email+">, here's what I got! \n\n"+outputString;
             }
          console.log(outputString);
      }
@@ -428,7 +433,7 @@ function handleFindMessage(command)
      {
          if (outputString)
          {
-             outputString = "Hello <@personEmail:"+email+">, here's what I got!"+outputString;
+             outputString = "Hello <@personEmail:"+email+">, here's what I got! \n\n"+outputString;
          }
          else
          {
@@ -457,8 +462,12 @@ function handleRoomStatus(command, input_message)
     var indexOfRoomName = indexOfRoomStatus + input_message.length+1;
     var roomname = text.substring(indexOfRoomName).trimLeft().toLowerCase();
     console.log("Roomname "+roomname);
-    
-    var building = room_building_map[roomname];
+    var building = 'unknown';
+
+    if (roomname in room_building_map)
+    {
+        building = room_building_map[roomname];
+    }
     var room;
     var allrooms = false;
     
@@ -484,14 +493,21 @@ function handleRoomStatus(command, input_message)
             outputString  = createAllRoomOutputString();
             break;
         default:
-            room = "Room is unknown";
+            room = 'unknown'
     }
     
-    outputString = "Hello <@personEmail:"+email+">, here's what I got!"+outputString;
+    if (outputString)
+    {
+        outputString = "Hello <@personEmail:"+email+">, here's what I got! \n\n"+outputString+ " ";
+    }
+    else
+    {
+        outputString = "Sorry <@personEmail:"+email+"> cannot match any rooms for the above query ";
+    }
     
     //If we have roomname -> we search for that roomname and return the 3 variables
     // If we don't then -> Room name unknown 
-    spark.createMessage(command.message.roomId, "<p>" + outputString + " </p>", { "markdown":true }, function(err, message) {
+    spark.createMessage(command.message.roomId, "" + outputString + " ", { "markdown":true }, function(err, message) {
         if (err) {
             console.log("WARNING: could not post Hello message to room: " + command.message.roomId);
             return;
