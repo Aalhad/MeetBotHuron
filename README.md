@@ -64,3 +64,4 @@ Here are some commands that you can use!
 	
 	The bot encourages you to try all kinds of possibilities and let us know your result!
 
+![](docs/img/meetbot_example.png)
