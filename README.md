@@ -53,14 +53,14 @@ Here are some commands that you can use!
 	    •	1st floor 
 	    •	floor 1 
 	    •	floor one 
-      
-Note: Unfortunately building specifiers are not yet ready! Examples :
+     
+     Note: Unfortunately building specifiers are not yet ready! Examples :
 	•	/RoomStatus 
 	•	/Roomstatus CERF315 
 	•	/Find available rooms on the 1st floor 
 	•	/find any rooms on floor 3 
 	•	/Find all occupied rooms on the floor two
 	•	/find available rooms on the second floor 
- 
-The bot encouragse you to try all kinds of possibilities and let us know your result!
+	
+	The bot encourages you to try all kinds of possibilities and let us know your result!
 
