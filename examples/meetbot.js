@@ -31,36 +31,20 @@ var spark = new SparkAPIWrapper(process.env.SPARK_TOKEN);
 
 
 //Helper functions
-var inactive_time = 3*60*1000;
+var inactive_time = 30*60*1000;
 
 var current_time = new Date();
 
 var building9 = [];
 
-var showcase = {};
-var donkeykong = {};
-var tetris = {};
-var cerf = {};
-
 // var new_room = createNewRoom(room, building)
 
-var showcase = createNewRoom('Showcase', '8', 'RTP Ridge 1');
-var donkeykong = createNewRoom('DonkeyKong', '12', 'RTP Ridge 2');
-var tetris = createNewRoom('Tetris', '12', 'RTP Ridge 2');
-var bonjovi = createNewRoom('BonJovi', '8', 'RTP Ridge 3');
 var einstein = createNewRoom('Einstein', '5', 'RTP Ridge 3');
 var cerf = createNewRoom('Cerf', '5', 'RTP Ridge 3');
 
-
-var ridge1 = {};
-var ridge2 = {};
 var ridge3 = {};
 
-ridge1['showcase'] = showcase;
-ridge2['donkeykong']=donkeykong;
-ridge2['tetris'] = tetris;
 ridge3['cerf'] = cerf;
-ridge3['bonjovi'] = bonjovi;
 ridge3['einstein'] = einstein;
 
 var floor = {};
@@ -83,9 +67,9 @@ floor['third'] = 'third';
 floor['three'] = 'third';
 floor['ridge3'] = 'third'
 
-var room_building_map = {'showcase':'ridge1', 'donkeykong':'ridge2', 'tetris':'ridge2', 'cerf':'ridge3', 'einstein':'ridge3'};
+var room_building_map = {'cerf':'ridge3', 'einstein':'ridge3'};
 
-var room_list = [bonjovi, showcase, donkeykong, tetris, cerf, einstein];
+var room_list = [cerf, einstein];
 
 var available_keywords = ['available', 'free', 'open', 'empty'];
 var occupied_keywords = ['occupied', 'inuse', 'taken', 'busy', 'unavailable'];
@@ -98,20 +82,31 @@ var app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-app.get('/blah', function(req, res) {
-  res.send('Hello Seattle\n');
-});
 app.post('/motion', function(req, res) {
   console.log("Got motion from IFTTT: " + JSON.stringify(req.body))
   //var body_dict = JSON.parse(req.body);
-  
+  try
+  {
   updateRoomStatusForMotion(req.body);
 
-  res.send('Got it!\n');
+  res.send('Got it!\n');    
+  }
+  catch(err)
+  {
+      res.send('Got TCP Connection Error');    
+  }
+  
 });
+
+try
+{
 app.listen(8082);
 console.log('Listening on port 8082...');
-
+}
+catch(err)
+{
+    console.log('Error');
+}
 ///
 // Help and fallback commands
 //
@@ -161,28 +156,12 @@ bot.onCommand("hello", function (command) {
     });
 });
 
-bot.onCommand("Roomstatus", function(command) {
-        handleRoomStatus(command, 'Roomstatus')
-});
-
-bot.onCommand("roomStatus", function(command) {
-        handleRoomStatus(command, 'roomStatus')
-});
-
 bot.onCommand("roomstatus", function(command) {
-        handleRoomStatus(command, 'roomstatus')
-});
-
-bot.onCommand("RoomStatus", function(command) {
-        handleRoomStatus(command, 'RoomStatus')
+        handleRoomStatus(command, 'Roomstatus')
 });
 
 bot.onCommand("find", function (command) {
     handleFindMessage(command);
-});
-
-bot.onCommand("Find", function (command) {
-      handleFindMessage(command);
 });
 
 //
@@ -200,7 +179,7 @@ bot.onEvent("memberships", "created", function (trigger) {
     // so happy to join
     console.log("bot's just added to room: " + trigger.data.roomId);
     
-    spark.createMessage(trigger.data.roomId, "Hi, I am the Meeting bot !\n\nType help to see me in action.", { "markdown":true }, function(err, message) {
+    spark.createMessage(trigger.data.roomId, "Hi, I am the Hello World bot !\n\nType hello to see me in action.", { "markdown":true }, function(err, message) {
         if (err) {
             console.log("WARNING: could not post Hello message to room: " + trigger.data.roomId);
             return;
@@ -237,18 +216,12 @@ function findRooms(building, floor, status)
         case 'ridge':
             switch (floor)
             {
-                case 'first':
-                    outputString = findRoomsByStatus(ridge1, status);
-                    break;
-                case 'second': 
-                    outputString = findRoomsByStatus(ridge2, status);
-                    break;
                 case 'third':
                     outputString = findRoomsByStatus(ridge3, status);
                     console.log("I am coming here")
                     break;
                 default:
-                    outputString = findRoomsByStatus(ridge1, status) + findRoomsByStatus(ridge2, status) + findRoomsByStatus(ridge3, status);
+                    outputString = "Could not find any rooms on the specified floor, listing all the rooms in the building for status: " +status+ " !\n\n"+findRoomsByStatus(ridge1, status) + findRoomsByStatus(ridge2, status) + findRoomsByStatus(ridge3, status);
             }
     }
     return outputString;
@@ -344,12 +317,6 @@ function processAnyAll(inputString, floor, email)
     {
         switch (floor)
         {
-            case 'first':
-                outputString = findRoomsByStatus(ridge1, 'available') + findRoomsByStatus(ridge1, 'inuse');
-                break;
-            case 'second':
-                outputString = findRoomsByStatus(ridge2, 'available') + findRoomsByStatus(ridge2, 'inuse');
-                break;
             case 'third':
                 outputString = findRoomsByStatus(ridge3, 'available') + findRoomsByStatus(ridge3, 'inuse');
                 break;
@@ -367,6 +334,8 @@ function processAnyAll(inputString, floor, email)
 
 function updateRoomStatusForMotion(request_body)
 {
+    try
+    {
     var roomname = request_body['DeviceName'].toLowerCase();
 
     var old_time_string = request_body['DetectedAt'].replace(" at "," ").replace(",", "").replace("PM", " pm").replace("AM", " am");
@@ -386,15 +355,17 @@ function updateRoomStatusForMotion(request_body)
         default:
             // code
     }
+    }
+    catch(err)
+    {
+        console.log("Error");
+    }
 }
 
 function updateStatusForAllRooms()
 {
     updateRoomStatusForSingleRoom(cerf);
     updateRoomStatusForSingleRoom(einstein);
-    updateRoomStatusForSingleRoom(showcase);
-    updateRoomStatusForSingleRoom(donkeykong);
-    updateRoomStatusForSingleRoom(tetris);
 }
 
 function handleFindMessage(command)
@@ -480,12 +451,6 @@ function handleRoomStatus(command, input_message)
     
     switch (building)
     {
-        case 'ridge1':
-            outputString = createOutputString(ridge1[roomname]);
-            break;
-        case 'ridge2':
-            outputString = createOutputString(ridge2[roomname]);
-            break;
         case 'ridge3':
             outputString = createOutputString(ridge3[roomname]);
             break;
