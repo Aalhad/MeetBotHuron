@@ -49,18 +49,6 @@ ridge3['einstein'] = einstein;
 
 var floor = {};
 
-floor['1st'] = 'first';
-floor['1'] = 'first';
-floor['first'] = 'first';
-floor['one'] = 'first';
-floor['ridge1'] = 'first'
-
-floor['2nd'] = 'second';
-floor['2'] = 'second';
-floor['second'] = 'second';
-floor['two'] = 'second';
-floor['ridge2'] = 'second'
-
 floor['3rd'] = 'third';
 floor['3'] = 'third';
 floor['third'] = 'third';
